@@ -1,6 +1,5 @@
 const config = {
-    port: process.env.PORT || 80,
-    hostName: "localhost"
+    port: process.env.PORT || 80
 };
 
 export default config;
