@@ -5,7 +5,7 @@ controller.generateMessage = (req, res, next) => {
     console.log(name);
 
     if (name == null || name === '') {
-        next(new Error('The "name" parameter is required'));
+        res.status(400).send('The request body must not be empty');
         return;
     }
 
