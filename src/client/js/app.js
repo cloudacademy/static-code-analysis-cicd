@@ -2,10 +2,10 @@ import $ from 'jquery';
 
 let pending = false;
 
-$('.input').keypress(function (e) {
+$('input').keypress((e) => {
     if (e.which == 13) {
         $('#get-message').click();
-        return false;    //<---- Add this line
+        return false;
     }
 });
 
