@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     mode: 'production',
     entry: {
-        app: path.resolve(__dirname, 'app/assets/js/index.js'),
+        app: path.resolve(__dirname, 'client/js/index.js'),
     },
     module: {
         rules: [
@@ -12,7 +12,7 @@ module.exports = {
 
                 // Omit any files outside of the project's js directory
                 include: [
-                    path.resolve(__dirname, 'app/assets/js'),
+                    path.resolve(__dirname, 'client/js'),
                 ],
 
                 // Only load .js files through Babel
@@ -22,6 +22,6 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'public/js'),
     },
 };

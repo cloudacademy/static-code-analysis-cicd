@@ -17,10 +17,10 @@
     "webpack-cli": "^2.0.14"
   },
   "scripts": {
-    "build-server": "babel server -d dist",
+    "build-server": "babel server -d build",
     "build-client": "webpack",
     "build": "npm run build-server && npm run build-client",
-    "start": "node build/server.js"
+    "start": "node build/index.js"
   },
   "license": "MIT"
 }

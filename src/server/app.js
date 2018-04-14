@@ -5,7 +5,7 @@ import api from './app/routes/index';
 
 const app = express();
 
-app.set('views', __dirname + '/app/assets/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.text({
