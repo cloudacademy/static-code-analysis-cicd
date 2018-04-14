@@ -1,5 +1,5 @@
-import production from "env/production.js"
-import development from "env/development.js"
+import production from "env/production"
+import development from "env/development"
 
 const configs = {
     "development": development,
