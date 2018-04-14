@@ -9,8 +9,4 @@ routes.get('/', (req, res) => {
     });
 });
 
-routes.get('/bundle.js', (req, res) => {
-    res.sendFile(path.resolve('dist/bundle.js'));
-});
-
 export default routes;

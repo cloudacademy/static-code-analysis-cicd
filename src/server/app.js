@@ -1,13 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import routes from './app/routes/index';
-import api from './app/routes/index';
+import path from 'path';
+import routes from './routes/index';
+import api from './routes/index';
 
 const app = express();
 
-app.set('views', __dirname + '/views');
+// Serve public directory as static assets
+app.use(express.static('public'));
+
+// Set Embedded JavaScript views 
+app.set('views', 'views');
 app.set('view engine', 'ejs');
 
+// Parse request bodies as text
 app.use(bodyParser.text({
     type: "*/*"
 }));
