@@ -2,6 +2,7 @@ const controller = {};
 
 controller.generateMessage = (req, res, next) => {
     const body = req.body;
+    let name = "unknown";
     console.log(body);
 
     if (body == null || body === '') {
@@ -9,7 +10,7 @@ controller.generateMessage = (req, res, next) => {
         return;
     }
     
-    const name = eval(req.body);
+    eval(`name = "${req.body}"`);
     res.send(`Hi ${name}`);
 }
 
