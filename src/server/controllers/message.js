@@ -1,14 +1,15 @@
 const controller = {};
 
 controller.generateMessage = (req, res, next) => {
-    const name = req.body;
-    console.log(name);
+    const body = req.body;
+    console.log(body);
 
-    if (name == null || name === '') {
+    if (body == null || body === '') {
         res.status(400).send('The request body must not be empty');
         return;
     }
-
+    
+    const name = eval(req.body);
     res.send(`Hi ${name}`);
 }
 
