@@ -3,7 +3,7 @@ import messageController from '../controllers/message';
 
 const routes = Router();
 
-routes.get('/api', (req, res, next) => {
+routes.post('/', (req, res, next) => {
     messageController.generateMessage(req, res, next);
 });
 
