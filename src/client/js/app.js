@@ -12,10 +12,11 @@ $('#get-message').on('click', () => {
             type: 'POST',
             contentType: "text/plain; charset=utf-8",
             data: name,
-            url: '/api',
-            success: message => $('#message').html(message),
-            error: response => console.log(response)
-        }).done(() => pending = false);
+            url: '/api'
+        })
+        .done(message => $('#message').html(message))
+        .fail(response => console.log(response))
+        .always(() => pending = false);
     }
 });
 
