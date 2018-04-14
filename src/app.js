@@ -7,6 +7,10 @@ const app = express();
 app.set('views', __dirname + '/app/assets/views');
 app.set('view engine', 'ejs');
 
+app.use(bodyParser.text({
+    type: "*/*"
+}));
+
 app.use('/', routes);
 app.use('/api', api);
 
