@@ -1,6 +1,6 @@
 const controller = {};
 
-controller.generateMessage = (req, res) => {
+controller.generateMessage = (req, res, next) => {
     const { name } = req.query;
 
     if (name == null || name === '') {
