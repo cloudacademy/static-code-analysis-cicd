@@ -14,7 +14,7 @@ $('#get-message').on('click', () => {
             data: name,
             url: '/api',
             success: message => $('#message').html(message),
-            error: response => conosle.log(response)
+            error: response => console.log(response)
         }).done(() => pending = false);
     }
 });
