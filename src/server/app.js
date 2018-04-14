@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import path from 'path';
 import routes from './routes/index';
 import api from './routes/index';
 
