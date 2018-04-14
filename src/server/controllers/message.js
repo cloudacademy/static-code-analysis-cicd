@@ -1,16 +1,15 @@
 const controller = {};
 
 controller.generateMessage = (req, res, next) => {
-    const { name } = req.query;
+    const name = req.body;
+    console.log(name);
 
     if (name == null || name === '') {
         next(new Error('The "name" parameter is required'));
         return;
     }
 
-    res.json({
-        message: `Hi ${name}`
-    });
+    res.send(`Hi ${name}`);
 }
 
 export default controller;
