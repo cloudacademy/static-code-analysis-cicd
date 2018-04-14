@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import routes from './app/routes/index';
 import api from './app/routes/index';
 
