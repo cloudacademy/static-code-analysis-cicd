@@ -2,6 +2,13 @@ import $ from 'jquery';
 
 let pending = false;
 
+$('.input').keypress(function (e) {
+    if (e.which == 13) {
+        $('#get-message').click();
+        return false;    //<---- Add this line
+    }
+});
+
 $('#get-message').on('click', () => {
     if (pending === false) {
         pending = true;
@@ -13,10 +20,9 @@ $('#get-message').on('click', () => {
             contentType: "text/plain; charset=utf-8",
             data: name,
             url: '/api'
-        })
-        .done(message => $('#message').html(message))
-        .fail(response => console.log(response))
-        .always(() => pending = false);
+        }).done(message => $('#message').html(message))
+            .fail(response => console.log(response))
+            .always(() => pending = false);
     }
 });
 
