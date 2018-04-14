@@ -26,3 +26,4 @@ $('#get-message').on('click', () => {
     }
 });
 
+$('input[type=text][name=name]').focus();
