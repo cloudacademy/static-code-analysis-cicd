@@ -17,9 +17,10 @@
     "webpack-cli": "^2.0.14"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d dist",
-    "start": "node server.js"
+    "build-server": "babel server -d dist",
+    "build-client": "webpack",
+    "build": "npm run build-server && npm run build-client",
+    "start": "node build/server.js"
   },
   "license": "MIT"
 }
