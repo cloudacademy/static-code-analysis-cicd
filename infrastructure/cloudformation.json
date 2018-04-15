@@ -19,6 +19,10 @@
             "DevSubnet": {
                 "CIDR": "10.0.0.0/24",
                 "AZ": "us-west-2a"
+            },
+            "ProdSubnet": {
+                "CIDR": "10.0.1.0/24",
+                "AZ": "us-west-2b"
             }
         },
         "UserConfig": {
@@ -46,7 +50,7 @@
                         "Fn::Join": [
                             "",
                             [
-                                "https://github.com/lrakai/protect-code-with-gauntlt/blob/master/src/cicd/",
+                                "https://github.com/lrakai/static-code-analysis-cicd/blob/master/",
                                 {
                                     "Ref": "CodePipelineS3ObjectKey"
                                 },
@@ -294,6 +298,17 @@
                                     "Effect": "Allow"
                                 },
                                 {
+                                    "Action": [
+                                        "codedeploy:CreateDeployment",
+                                        "codedeploy:GetApplicationRevision",
+                                        "codedeploy:GetDeployment",
+                                        "codedeploy:GetDeploymentConfig",
+                                        "codedeploy:RegisterApplicationRevision"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
                                     "Effect": "Deny",
                                     "Action": [
                                         "ec2:ModifyInstanceAttribute",
@@ -314,7 +329,33 @@
                 "RoleName": "codepipeline-role"
             }
         },
-        "Cloud9Ec2InstanceRole": {
+        "CodeDeployRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codedeploy.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+                ],
+                "RoleName": "codedeploy-role"
+            }
+        },
+        "DeployEc2InstanceRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -354,7 +395,7 @@
                         }
                     }
                 ],
-                "RoleName": "cloud9-instance-role"
+                "RoleName": "deploy-instance-role"
             }
         },
         "DeployInstanceProfile": {
@@ -363,7 +404,7 @@
                 "Path": "/",
                 "Roles": [
                     {
-                        "Ref": "Cloud9Ec2InstanceRole"
+                        "Ref": "DeployEc2InstanceRole"
                     }
                 ]
             }
@@ -527,6 +568,204 @@
                 ]
             }
         },
+        "ProdVpc": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": {
+                    "Fn::FindInMap": [
+                        "SubnetConfig",
+                        "VPC",
+                        "CIDR"
+                    ]
+                },
+                "EnableDnsSupport": true,
+                "EnableDnsHostnames": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Production Vpc"
+                    }
+                ]
+            }
+        },
+        "ProdInternetGatewayAttach": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "ProdVpc"
+                },
+                "InternetGatewayId": {
+                    "Ref": "ProdInternetGateway"
+                }
+            }
+        },
+        "ProdInternetGateway": {
+            "Type": "AWS::EC2::InternetGateway"
+        },
+        "ProdSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Allow incoming http traffic",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ],
+                "VpcId": {
+                    "Ref": "ProdVpc"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Prod Servers"
+                    },
+                    {
+                        "Key": "Environment",
+                        "Value": "Prod"
+                    }
+                ]
+            }
+        },
+        "ProdSubnet": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "ProdVpc"
+                },
+                "MapPublicIpOnLaunch": true,
+                "AvailabilityZone": {
+                    "Fn::FindInMap": [
+                        "SubnetConfig",
+                        "ProdSubnet",
+                        "AZ"
+                    ]
+                },
+                "CidrBlock": {
+                    "Fn::FindInMap": [
+                        "SubnetConfig",
+                        "ProdSubnet",
+                        "CIDR"
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Prod Subnet A"
+                    },
+                    {
+                        "Key": "Environment",
+                        "Value": "Prod"
+                    }
+                ]
+            }
+        },
+        "ProdSubnetRouteTableAssociation": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "ProdSubnet"
+                },
+                "RouteTableId": {
+                    "Ref": "ProdPublicRouteTable"
+                }
+            }
+        },
+        "ProdPublicRouteTable": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "ProdVpc"
+                }
+            }
+        },
+        "ProdPublicRoute": {
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "ProdPublicRouteTable"
+                },
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId": {
+                    "Ref": "ProdInternetGateway"
+                }
+            }
+        },
+        "DeploymentInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "AssociatePublicIpAddress": true,
+                "IamInstanceProfile": {
+                    "Ref": "DeployInstanceProfile"
+                },
+                "ImageId": "ami-4836a428",
+                "InstanceType": "t2.micro",
+                "SecurityGroups": [
+                    {
+                        "Ref": "ProdSecurityGroup"
+                    }
+                ],
+                "SubnetId": {
+                    "Ref": "ProdSubnet"
+                },
+                "Tags": [
+                    {
+                        "Key": "Type",
+                        "Value": "Deployment"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash\n",
+                                "curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -\n",
+                                "yum install -y ruby nodejs\n",
+                                "cd /home/ec2-user\n",
+                                "curl -O https://aws-codedeploy-us-west-2.s3.amazonaws.com/latest/install\n",
+                                "chmod +x ./install\n",
+                                "./install auto\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        "CodeDeployApplication": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ComputePlatform": "Server",
+                "ApplicationName": "static-analysis"
+            }
+        },
+        "DeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplication"
+                },
+                "Ec2TagFilters": [
+                    {
+                        "Key": {
+                            "Ref": "Type"
+                        },
+                        "Value": {
+                            "Ref": "Deployment"
+                        },
+                        "Type": "KEY_AND_VALUE"
+                    }
+                ],
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployRole",
+                        "Arn"
+                    ]
+                }
+            }
+        },
         "CodeArtifacts": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
@@ -597,6 +836,34 @@
                                 "Configuration": {
                                     "ProjectName": {
                                         "Ref": "BuildProject"
+                                    }
+                                },
+                                "RunOrder": 1
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Deploy",
+                        "Actions": [
+                            {
+                                "Name": "DeployAction",
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "BuildOutput"
+                                    }
+                                ],
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Version": "1",
+                                    "Provider": "CodeDeploy"
+                                },
+                                "Configuration": {
+                                    "ApplicationName": {
+                                        "Ref": "CodeDeployApplication"
+                                    },
+                                    "DeploymentGroupName": {
+                                        "Ref": "DeploymentGroup"
                                     }
                                 },
                                 "RunOrder": 1
@@ -741,6 +1008,8 @@
                                         "codebuild:ListBuilds",
                                         "codebuild:ListConnectedOAuthAccounts",
                                         "codebuild:ListCuratedEnvironmentImages",
+                                        "codedeploy:ListApplications",
+                                        "codedeploy:ListDeploymentGroups",
                                         "iam:ListRoles"
                                     ],
                                     "Resource": [
@@ -789,6 +1058,26 @@
                                     "Effect": "Allow"
                                 },
                                 {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "codedeploy:*"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:codedeploy:us-west-2:",
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    ":*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
                                     "Action": [
                                         "codepipeline:*"
                                     ],
@@ -822,6 +1111,18 @@
                                                         "Ref": "AWS::AccountId"
                                                     },
                                                     ":role/codebuild-role"
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:iam::",
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    ":role/codedeploy-role"
                                                 ]
                                             ]
                                         },
