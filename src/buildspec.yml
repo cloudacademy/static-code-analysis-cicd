@@ -8,6 +8,7 @@ phases:
       - npm install
   build:
     commands:
+      - npm run validate
       - npm run build
 cache:
   paths:
