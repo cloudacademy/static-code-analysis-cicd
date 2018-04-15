@@ -749,12 +749,8 @@
                 },
                 "Ec2TagFilters": [
                     {
-                        "Key": {
-                            "Ref": "Type"
-                        },
-                        "Value": {
-                            "Ref": "Deployment"
-                        },
+                        "Key": "Type",
+                        "Value": "Deployment",
                         "Type": "KEY_AND_VALUE"
                     }
                 ],
