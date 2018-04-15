@@ -893,7 +893,7 @@
                 "Environment": {
                     "Type": "LINUX_CONTAINER",
                     "ComputeType": "BUILD_GENERAL1_SMALL",
-                    "Image": "aws/codebuild/docker:17.09.0",
+                    "Image": "aws/codebuild/nodejs:6.3.1",
                     "EnvironmentVariables": [
                         {
                             "Name": "varName",
