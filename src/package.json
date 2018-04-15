@@ -26,7 +26,8 @@
     "build-server": "babel server -d build",
     "build-client": "webpack",
     "build": "npm run build-server && npm run build-client",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "validate": "./node_modules/.bin/eslint server/ client/"
   },
   "license": "MIT"
 }
