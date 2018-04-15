@@ -696,7 +696,6 @@
         "DeploymentInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-                "AssociatePublicIpAddress": true,
                 "IamInstanceProfile": {
                     "Ref": "DeployInstanceProfile"
                 },
