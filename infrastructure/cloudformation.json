@@ -892,6 +892,20 @@
                 "Artifacts": {
                     "Type": "CODEPIPELINE"
                 },
+                "Cache": {
+                    "Location": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                {
+                                    "Ref": "CodeArtifacts"
+                                },
+                                "/build-cache"
+                            ]
+                        ]
+                    },
+                    "Type": "S3"
+                },
                 "Environment": {
                     "Type": "LINUX_CONTAINER",
                     "ComputeType": "BUILD_GENERAL1_SMALL",
