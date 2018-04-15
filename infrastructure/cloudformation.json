@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Protect Your Code with Gauntlt",
+    "Description": "Static Code Analysis in CICD Pipelines",
     "Parameters": {
         "Region": {
             "Type": "String",
