@@ -907,38 +907,6 @@
                 "TimeoutInMinutes": 10
             }
         },
-        "TestProject": {
-            "Type": "AWS::CodeBuild::Project",
-            "Properties": {
-                "Name": "App-Test",
-                "Description": "Build app",
-                "ServiceRole": {
-                    "Fn::GetAtt": [
-                        "CodeBuildRole",
-                        "Arn"
-                    ]
-                },
-                "Artifacts": {
-                    "Type": "CODEPIPELINE"
-                },
-                "Environment": {
-                    "Type": "LINUX_CONTAINER",
-                    "ComputeType": "BUILD_GENERAL1_SMALL",
-                    "Image": "aws/codebuild/docker:17.09.0",
-                    "EnvironmentVariables": [
-                        {
-                            "Name": "varName",
-                            "Value": "varValue"
-                        }
-                    ]
-                },
-                "Source": {
-                    "Type": "CODEPIPELINE",
-                    "BuildSpec": "buildspec.test.yml"
-                },
-                "TimeoutInMinutes": 10
-            }
-        },
         "Group": {
             "Type": "AWS::IAM::Group",
             "Properties": {
