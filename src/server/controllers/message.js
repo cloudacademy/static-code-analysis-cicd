@@ -1,17 +1,17 @@
-const controller = {};
+const controller = {}
 
 controller.generateMessage = (req, res, next) => {
-    const body = req.body;
-    let name = "unknown";
-    console.log(body);
+  const body = req.body
+  let name = 'unknown'
+  console.log(body)
 
-    if (body == null || body === '') {
-        res.status(400).send('The request body must not be empty');
-        return;
-    }
-    
-    eval(`name = "${req.body}"`);
-    res.send(`Hi ${name}`);
+  if (body == null || body === '') {
+    res.status(400).send('The request body must not be empty')
+    return
+  }
+
+  eval(`name = "${req.body}"`)
+  res.send(`Hi ${name}`)
 }
 
-export default controller;
+export default controller

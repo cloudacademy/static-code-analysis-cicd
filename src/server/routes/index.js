@@ -1,12 +1,11 @@
-import { Router } from 'express';
-import path from 'path';
+import { Router } from 'express'
 
-const routes = Router();
+const routes = Router()
 
 routes.get('/', (req, res) => {
-    res.render('index', {
-        message: 'Welcome!'
-    });
-});
+  res.render('index', {
+    message: 'Welcome!'
+  })
+})
 
-export default routes;
+export default routes
