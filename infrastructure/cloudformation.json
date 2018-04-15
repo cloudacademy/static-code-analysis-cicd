@@ -695,44 +695,46 @@
         },
         "DeploymentInstance": {
             "Type": "AWS::EC2::Instance",
-          "Properties": {
-            "IamInstanceProfile": {
-              "Ref": "DeployInstanceProfile"
-            },
-            "ImageId": "ami-4836a428",
-            "InstanceType": "t2.micro",
-            "SecurityGroupIds": {
-              "Fn::GetAtt": [
-                "ProdSecurityGroup",
-                "GroupId"
-              ]
-            },
-            "SubnetId": {
-              "Ref": "ProdSubnet"
-            },
-            "Tags": [
-              {
-                "Key": "Type",
-                "Value": "Deployment"
-              }
-            ],
-            "UserData": {
-              "Fn::Base64": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "#!/bin/bash\n",
-                    "curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -\n",
-                    "yum install -y ruby nodejs\n",
-                    "cd /home/ec2-user\n",
-                    "curl -O https://aws-codedeploy-us-west-2.s3.amazonaws.com/latest/install\n",
-                    "chmod +x ./install\n",
-                    "./install auto\n"
-                  ]
-                ]
-              }
+            "Properties": {
+                "IamInstanceProfile": {
+                    "Ref": "DeployInstanceProfile"
+                },
+                "ImageId": "ami-4836a428",
+                "InstanceType": "t2.micro",
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "ProdSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "SubnetId": {
+                    "Ref": "ProdSubnet"
+                },
+                "Tags": [
+                    {
+                        "Key": "Type",
+                        "Value": "Deployment"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash\n",
+                                "curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -\n",
+                                "yum install -y ruby nodejs\n",
+                                "cd /home/ec2-user\n",
+                                "curl -O https://aws-codedeploy-us-west-2.s3.amazonaws.com/latest/install\n",
+                                "chmod +x ./install\n",
+                                "./install auto\n"
+                            ]
+                        ]
+                    }
+                }
             }
-          }
         },
         "CodeDeployApplication": {
             "Type": "AWS::CodeDeploy::Application",
