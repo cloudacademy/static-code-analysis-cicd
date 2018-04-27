@@ -1,6 +1,6 @@
 # static-code-analysis-cicd
 
-Example of integrating static code analysis into a CI/CD pipeline. The project includes a sample client and server web application written in ES6 JavaScript. For demonstration purposes, the static analysis tool used is ESLint. Use of other static analyis tools and/or other programming languages would follow a similar pattern.
+Example of integrating static code analysis into a CI/CD pipeline. The project includes a sample client and server web application in the `src/` directory written in ES6 JavaScript. For demonstration purposes, the static analysis tool used is ESLint. Use of other static analyis tools and/or other programming languages would follow a similar pattern.
 
 The CI/CD pipeline chosen for demonstration purposes is a three-stage continuous deployment pipeline in AWS CodePipeline. The continuous deployment pipeline stages are:
 
@@ -10,7 +10,7 @@ The CI/CD pipeline chosen for demonstration purposes is a three-stage continuous
 
 The source code initially has a security vulnerability that can be detected by using ESLint. The final environment is as follows:
 
-![Final Envrionment](https://user-images.githubusercontent.com/3911650/39382293-3fdec066-4a22-11e8-8b67-84abc98b17e5.png)
+![Final Environment](https://user-images.githubusercontent.com/3911650/39382293-3fdec066-4a22-11e8-8b67-84abc98b17e5.png)
 
 ## Getting Started
 
