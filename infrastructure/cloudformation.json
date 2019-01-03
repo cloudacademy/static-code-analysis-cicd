@@ -774,6 +774,7 @@
         },
         "AppPipeline": {
             "Type": "AWS::CodePipeline::Pipeline",
+            "DependsOn": "DeployInstanceProfile",
             "Properties": {
                 "RoleArn": {
                     "Fn::GetAtt": [
